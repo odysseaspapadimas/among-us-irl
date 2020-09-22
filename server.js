@@ -5,7 +5,6 @@ var path = require("path");
 
 const app = express();
 
-app.set("port", 5000);
 app.use(express.static(`${__dirname}/static`));
 
 const server = http.createServer(app);
@@ -15,7 +14,7 @@ app.get("/", function (request, response) {
   response.sendFile(path.join(__dirname, "/index.html"));
 });
 
-server.listen(5500, () => {
+server.listen(process.env.PORT || 5500, () => {
   console.log("Server ready...");
 });
 
