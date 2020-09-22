@@ -22,6 +22,9 @@ let players = [];
 let ready = [];
 let roles = ["impostor", 'miet'];
 
+let colors = ['black', 'blue', 'brown', 'green', 'orange', 'pink', 'purple', 'red', 'white', 'yellow'];
+shuffle(colors);
+
 io.on("connection", (socket) => {
   socket.on("print", (msg) => {
     console.log(msg);
@@ -42,10 +45,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("emergency", (msg) => {
-    io.emit("emergency", msg);
+    io.emit("emergency", msg, players);
   });
 
-  let colors = ['black', 'blue', 'brown', 'green', 'orange', 'pink', 'purple', 'red', 'white', 'yellow'];
   
 
   socket.on("nameSubmit", (nickname) => {
@@ -57,10 +59,7 @@ io.on("connection", (socket) => {
     players.push(nickname);
     socket.join(nickname);
     console.log(players);
-
-    let color = colors.splice(Math.floor(Math.random() * colors.length), 1);
-    console.log(color);
-    io.to(socket.nickname).emit('color', color);
+    io.to(socket.nickname).emit('color', colors);
     io.emit("players", players);
   });
 

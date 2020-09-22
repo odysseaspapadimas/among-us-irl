@@ -15,6 +15,13 @@ body {
     padding-top: 30px;
 }
 
+.full-screen {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+}
+
 .ready {
     padding: 12px 22px;
     background-color: rgb(236, 53, 53);
@@ -50,6 +57,7 @@ body {
 }
 
 .select-button {
+    display: inline-block;
     width: 200px;
     height: 180px;
     line-height: 200px;
@@ -80,5 +88,21 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
+    padding-top: 30px;
+}
+
+.player {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.vote {
+    padding: 10px 18px;
+    background-color: rgb(250, 236, 34);
+    color: white;
+    font-size: 1.2rem;
+    border: none;
+    margin-bottom: 40px;
 }

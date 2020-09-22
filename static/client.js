@@ -8,17 +8,27 @@ const readyUl = document.querySelector(".players-ready");
 const playersUl = document.querySelector(".players");
 const roleH = document.querySelector(".role");
 
+const fullScreen = document.querySelector(".full-screen");
+let isFullScreen = false;
+
 const emergency = new Audio("/sounds/emergency.wav");
 const body = new Audio("/sounds/body.wav");
 const roles = new Audio("/sounds/roles.wav");
 
 let nickname;
-let playerColor;
+let colors;
 
 
 const socket = io();
 
 name.focus();
+
+const fullScreenHandler = () => {
+  if (!isFullScreen) openFullscreen();
+  else closeFullscreen();
+}
+
+fullScreen.addEventListener("click", fullScreenHandler);
 
 readyBtn.addEventListener("click", () => {
   socket.emit("ready", nickname);
@@ -38,9 +48,19 @@ emergencyBtn.addEventListener("click", () => {
   socket.emit("emergency", nickname);
 });
 
-socket.on("emergency", (msg) => {
+socket.on("emergency", (msg, players) => {
   emergencyMsg.innerText = `${msg} called an emergency meeting!`;
   emergency.play();
+  emergencyBtn.style.display = 'none';
+
+  playersUl.innerHTML = ``;
+  for (let i = 0; i < players.length; i++) {
+    playersUl.innerHTML += `<div class="player">
+                                <li>${players[i]}</li>
+                                <img src="img/characters/${colors[i]}.png" alt="">
+                                <button class="vote">Vote</button>
+                            </div>`;
+  }
 });
 
 nameSubmit.addEventListener("click", (e) => {
@@ -58,16 +78,15 @@ socket.on("joined", (msg) => {
   console.log(msg);
 });
 
-socket.on('color', color => {
-    playerColor = color;
-    console.log(playerColor);
+socket.on('color', colorsArr => {
+    colors = colorsArr;
 })
 socket.on("players", (players) => {
   playersUl.innerHTML = ``;
   for (let i = 0; i < players.length; i++) {
     playersUl.innerHTML += `<div class="player">
                                 <li>${players[i]}</li>
-                                <img src="img/characters/${playerColor}.png" alt="">
+                                <img src="img/characters/${colors[i]}.png" alt="">
                             </div>`;
   }
 });
@@ -82,7 +101,7 @@ socket.on("disconnected", (nickname, players, readyPlayers) => {
   for (let i = 0; i < players.length; i++) {
     playersUl.innerHTML += `<div class="player">
                                 <li>${players[i]}</li>
-                                <img src="img/characters/${playerColor}.png" alt="">
+                                <img src="img/characters/${colors[i]}.png" alt="">
                             </div>`;
   }
 
@@ -96,3 +115,33 @@ socket.on("role", (role) => {
   roleH.innerHTML = role;
   roles.play();
 });
+
+const elem = document.documentElement;
+
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) { /* Firefox */
+      elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+      elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE/Edge */
+      elem.msRequestFullscreen();
+  }
+
+  isFullScreen = true;
+}
+
+function closeFullscreen() {
+  if (document.exitFullscreen) {
+      document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) { /* Firefox */
+      document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+      document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) { /* IE/Edge */
+      document.msExitFullscreen();
+  }
+
+  isFullScreen = false;
+}
