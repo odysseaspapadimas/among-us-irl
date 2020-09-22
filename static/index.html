@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Among Us</title>
+</head>
+
+<body>
+    <button class="ready">Ready</button>
+    <ul class="players-ready">
+    </ul>
+    <br>
+    <button class="emergency select-button"></button>
+    <h1 class="emergency-msg"></h1>
+    <div class="name-modal">
+        <form>
+            <h1>Enter your name</h1>
+            <input class="name" type="text" name="" id="name">
+            <button type="submit" class="name-submit">OK</button>
+        </form>
+
+
+    </div>
+    <ul class="players">
+    </ul>
+
+    <h1 class="role"></h1>
+    <script src="/client.js"></script>
+</body>
+
+</html>
