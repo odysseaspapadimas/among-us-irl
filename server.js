@@ -66,6 +66,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     removePlayer(socket.nickname);
+    console.log(`${socket.nickname} disconnected`);
     io.emit("disconnected", socket.nickname, players, ready);
   });
 });

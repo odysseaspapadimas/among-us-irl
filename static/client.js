@@ -80,7 +80,10 @@ socket.on("disconnected", (nickname, players, readyPlayers) => {
   console.log(`${nickname} disconnected`);
   playersUl.innerHTML = ``;
   for (let i = 0; i < players.length; i++) {
-    playersUl.innerHTML += `<li class="player">${players[i]}</li>`;
+    playersUl.innerHTML += `<div class="player">
+                                <li>${players[i]}</li>
+                                <img src="img/characters/${playerColor}.png" alt="">
+                            </div>`;
   }
 
   readyUl.innerHTML = ``;
