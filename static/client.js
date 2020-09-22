@@ -7,6 +7,7 @@ const readyBtn = document.querySelector(".ready");
 const readyUl = document.querySelector(".players-ready");
 const playersUl = document.querySelector(".players");
 const roleH = document.querySelector(".role");
+let voteBtn;
 
 const fullScreen = document.querySelector(".full-screen");
 let isFullScreen = false;
@@ -18,7 +19,6 @@ const roles = new Audio("/sounds/roles.wav");
 let nickname;
 let colors;
 
-
 const socket = io();
 
 name.focus();
@@ -26,7 +26,7 @@ name.focus();
 const fullScreenHandler = () => {
   if (!isFullScreen) openFullscreen();
   else closeFullscreen();
-}
+};
 
 fullScreen.addEventListener("click", fullScreenHandler);
 
@@ -51,16 +51,25 @@ emergencyBtn.addEventListener("click", () => {
 socket.on("emergency", (msg, players) => {
   emergencyMsg.innerText = `${msg} called an emergency meeting!`;
   emergency.play();
-  emergencyBtn.style.display = 'none';
+  emergencyBtn.style.display = "none";
 
   playersUl.innerHTML = ``;
   for (let i = 0; i < players.length; i++) {
     playersUl.innerHTML += `<div class="player">
                                 <li>${players[i]}</li>
                                 <img src="img/characters/${colors[i]}.png" alt="">
-                                <button class="vote">Vote</button>
+                                <button class="vote ${colors[i]}">Vote</button>
                             </div>`;
   }
+
+  voteBtn = document.querySelectorAll(".vote");
+  console.log(voteBtn);
+  voteBtn.forEach(btn => {
+    btn.addEventListener("click", () => {
+      console.log(btn.parentElement.children[0].innerText);
+      socket.emit("print", `${btn.parentElement.children[0].innerText} just got voted by ${nickname}`); //btn.classList[1]
+    });
+  });
 });
 
 nameSubmit.addEventListener("click", (e) => {
@@ -78,9 +87,9 @@ socket.on("joined", (msg) => {
   console.log(msg);
 });
 
-socket.on('color', colorsArr => {
-    colors = colorsArr;
-})
+socket.on("color", (colorsArr) => {
+  colors = colorsArr;
+});
 socket.on("players", (players) => {
   playersUl.innerHTML = ``;
   for (let i = 0; i < players.length; i++) {
@@ -116,17 +125,22 @@ socket.on("role", (role) => {
   roles.play();
 });
 
+
+
 const elem = document.documentElement;
 
 function openFullscreen() {
   if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-  } else if (elem.mozRequestFullScreen) { /* Firefox */
-      elem.mozRequestFullScreen();
-  } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-      elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE/Edge */
-      elem.msRequestFullscreen();
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) {
+    /* Firefox */
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) {
+    /* Chrome, Safari and Opera */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    /* IE/Edge */
+    elem.msRequestFullscreen();
   }
 
   isFullScreen = true;
@@ -134,13 +148,16 @@ function openFullscreen() {
 
 function closeFullscreen() {
   if (document.exitFullscreen) {
-      document.exitFullscreen();
-  } else if (document.mozCancelFullScreen) { /* Firefox */
-      document.mozCancelFullScreen();
-  } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
-      document.webkitExitFullscreen();
-  } else if (document.msExitFullscreen) { /* IE/Edge */
-      document.msExitFullscreen();
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    /* Firefox */
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    /* Chrome, Safari and Opera */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    /* IE/Edge */
+    document.msExitFullscreen();
   }
 
   isFullScreen = false;

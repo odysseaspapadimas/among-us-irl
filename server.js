@@ -32,7 +32,6 @@ io.on("connection", (socket) => {
 
   socket.on("ready", (player) => {
     ready.push(player);
-    console.log(ready);
     io.emit("ready", ready);
 
     if (arraysEqual(players, ready)) {
@@ -46,6 +45,9 @@ io.on("connection", (socket) => {
 
   socket.on("emergency", (msg) => {
     io.emit("emergency", msg, players);
+    app.get('/restart', function (req, res, next) {
+      process.exit(1);
+    });
   });
 
   
@@ -64,9 +66,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log(players +" players", ready +" ready");
     removePlayer(socket.nickname);
-    console.log(players +'hey', ready +' lol');
     console.log(`${socket.nickname} disconnected`);
     io.emit("disconnected", socket.nickname, players, ready);
   });
