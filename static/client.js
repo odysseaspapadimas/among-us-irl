@@ -87,7 +87,7 @@ socket.on("disconnected", (nickname, players, readyPlayers) => {
   }
 
   readyUl.innerHTML = ``;
-  for (let i = 0; i < players.length; i++) {
+  for (let i = 0; i < readyPlayers.length; i++) {
     readyUl.innerHTML += `<li class="player">${readyPlayers[i]} is ready!</li>`;
   }
 });
