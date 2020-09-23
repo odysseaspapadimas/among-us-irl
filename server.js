@@ -60,13 +60,12 @@ io.on("connection", (socket) => {
     }
 
     console.log(players);
+    io.emit("updatePlayers", players);
   });
 
   socket.on("emergency", (msg) => {
     io.emit("emergency", msg, players);
-    app.get("/restart", function (req, res, next) {
-      process.exit(1);
-    });
+    io.emit("updatePlayers", players);
   });
 
   socket.on("nameSubmit", (nickname) => {
@@ -85,6 +84,7 @@ io.on("connection", (socket) => {
     socket.join(nickname);
     console.log(players);
     io.to(socket.nickname).emit("props", colors, players);
+    io.emit("updatePlayers", players);
     io.emit("players", players);
   });
 
@@ -93,13 +93,25 @@ io.on("connection", (socket) => {
     for (let i = 0; i < players.length; i++) {
       if (players[i].name == playerVoted.name) {
         players[i].votes++;
-        console.log(players, 'hi', votedBy);
+        console.log(players, "hi", votedBy);
       }
     }
     io.emit("voted", votedBy, players);
   });
 
+  socket.on("eject", (playerToEject) => {
+    for (let i = 0; i < players.length; i++) {
+      if (players[i].name == playerToEject.name) {
+        players[i].alive = false;
+      }
+    }
+
+    io.emit("updatePlayers", players);
+    io.emit("new round");
+  });
+
   socket.on("disconnect", () => {
+    io.emit("updatePlayers", players);
     removePlayer(socket.nickname);
     console.log(`${socket.nickname} disconnected`);
     io.emit("disconnected", socket.nickname, players, ready);

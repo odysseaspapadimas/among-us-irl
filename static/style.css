@@ -156,6 +156,10 @@ body {
     border: none;
 }
 
+.hide {
+    display: none;
+}
+
 .vote-modal {
     display: none;
     position: fixed;
@@ -166,10 +170,26 @@ body {
     height: 100%;
     background-color: rgb(0, 0, 0);
     background-color: rgba(0, 0, 0, 0.7);
+    text-align: center;
+}
+
+.vote-modal p {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    font-size: 3rem;
+    background-color: orangered;
+    color: white;
 }
 
 .voted {
     position: absolute;
     top:10px;
+    left: 0;
+}
+
+.dead {
+    position: absolute;
+    top:30px;
     left: 0;
 }
