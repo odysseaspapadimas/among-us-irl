@@ -51,7 +51,6 @@ emergencyBtn.addEventListener("click", () => {
 socket.on("emergency", (msg, players) => {
   emergencyMsg.innerText = `${msg} called an emergency meeting!`;
   emergency.play();
-  emergencyBtn.style.display = "none";
 
   playersUl.innerHTML = ``;
   for (let i = 0; i < players.length; i++) {
