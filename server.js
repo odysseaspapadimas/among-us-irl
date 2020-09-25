@@ -19,9 +19,8 @@ server.listen(process.env.PORT || 5500, () => {
 });
 
 let players = [];
-let playersOjb = [];
 let ready = [];
-let roles = ["impostor", "miet"];
+let roles = ["impostor", "miet", "miet", "impostor", "miet"];
 
 let colors = [
   "black",
@@ -52,20 +51,25 @@ io.on("connection", (socket) => {
     sortedReady.sort((a, b) => (a.name > b.name ? 1 : -1));
 
     if (arraysEqual(sortedPlayers, sortedReady)) {
-      for (let i = 0; i < sortedPlayers.length; i++) {
+      for (let i = 0; i < players.length; i++) {
         shuffle(roles);
         let role = roles.splice(Math.floor(Math.random() * roles.length), 1);
-        io.to(sortedPlayers[i].name).emit("role", role);
+        players[i].role = role[0];
+
+        io.emit("updatePlayers", players);
+
+        //io.to(players[i].name).emit("role", role);
       }
+
+      io.emit("updatePlayers", players);
+      io.emit("role");
     }
 
     console.log(players);
-    io.emit("updatePlayers", players);
   });
 
   socket.on("emergency", (msg) => {
-    io.emit("emergency", msg, players);
-    io.emit("updatePlayers", players);
+    io.emit("emergency", msg);
   });
 
   socket.on("nameSubmit", (nickname) => {
@@ -79,7 +83,6 @@ io.on("connection", (socket) => {
       color: color,
       alive: true,
       role: null,
-      votes: 0,
     });
     socket.join(nickname);
     console.log(players);
@@ -99,15 +102,14 @@ io.on("connection", (socket) => {
     io.emit("voted", votedBy, players);
   });
 
-  socket.on("eject", (playerToEject) => {
-    for (let i = 0; i < players.length; i++) {
-      if (players[i].name == playerToEject.name) {
-        players[i].alive = false;
-      }
-    }
-
-    io.emit("updatePlayers", players);
+  socket.on("vote end", (playersNew) => {
+    io.emit("updatePlayers", playersNew);
     io.emit("new round");
+    
+  });
+
+  socket.on("killed", (playersNew) => {
+    io.emit("updatePlayers", playersNew);
   });
 
   socket.on("disconnect", () => {
